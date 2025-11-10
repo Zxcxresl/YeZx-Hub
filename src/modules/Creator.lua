@@ -212,7 +212,7 @@ function Creator.GetThemeProperty(Property, Theme)
         
         if value == nil then return nil end
         
-        if type(value) == "string" and string.sub(value, 1, 1) == "#" then
+        if typeof(value) == "string" and string.sub(value, 1, 1) == "#" then
             return Color3.fromHex(value)
         end
         
@@ -220,15 +220,15 @@ function Creator.GetThemeProperty(Property, Theme)
             return value
         end
         
-        if type(value) == "number" then
+        if typeof(value) == "number" then
             return value
         end
         
-        if type(value) == "table" and value.Color and value.Transparency then
+        if typeof(value) == "table" and value.Color and value.Transparency then
             return value
         end
         
-        if type(value) == "function" then
+        if typeof(value) == "function" then
             return value()
         end
         
@@ -237,7 +237,7 @@ function Creator.GetThemeProperty(Property, Theme)
 
     local value = getValue(Property, Theme)
     if value ~= nil then
-        if type(value) == "string" and string.sub(value, 1, 1) ~= "#" then
+        if typeof(value) == "string" and string.sub(value, 1, 1) ~= "#" then
             local referencedValue = Creator.GetThemeProperty(value, Theme)
             if referencedValue ~= nil then
                 return referencedValue
@@ -249,7 +249,7 @@ function Creator.GetThemeProperty(Property, Theme)
 
     local fallbackProperty = Creator.ThemeFallbacks[Property]
     if fallbackProperty ~= nil then
-        if type(fallbackProperty) == "string" and string.sub(fallbackProperty, 1, 1) ~= "#" then
+        if typeof(fallbackProperty) == "string" and string.sub(fallbackProperty, 1, 1) ~= "#" then
             return Creator.GetThemeProperty(fallbackProperty, Theme)
         else
             return getValue(Property, {[Property] = fallbackProperty})
@@ -258,7 +258,7 @@ function Creator.GetThemeProperty(Property, Theme)
 
     value = getValue(Property, Creator.Themes["Dark"])
     if value ~= nil then
-        if type(value) == "string" and string.sub(value, 1, 1) ~= "#" then
+        if typeof(value) == "string" and string.sub(value, 1, 1) ~= "#" then
             local referencedValue = Creator.GetThemeProperty(value, Creator.Themes["Dark"])
             if referencedValue ~= nil then
                 return referencedValue
@@ -269,7 +269,7 @@ function Creator.GetThemeProperty(Property, Theme)
     end
 
     if fallbackProperty ~= nil then
-        if type(fallbackProperty) == "string" and string.sub(fallbackProperty, 1, 1) ~= "#" then
+        if typeof(fallbackProperty) == "string" and string.sub(fallbackProperty, 1, 1) ~= "#" then
             return Creator.GetThemeProperty(fallbackProperty, Creator.Themes["Dark"])
         else
             return getValue(Property, {[Property] = fallbackProperty})
@@ -309,7 +309,7 @@ function Creator.UpdateTheme(TargetObject, isTween)
                     else
                         Creator.Tween(objData.Object, 0.08, { [Property] = value }):Play()
                     end
-                elseif type(value) == "table" and value.Color and value.Transparency then
+                elseif typeof(value) == "table" and value.Color and value.Transparency then
                     objData.Object[Property] = Color3.new(1, 1, 1)
                     
                     local gradient = objData.Object:FindFirstChild("WindUIGradient")
@@ -327,7 +327,7 @@ function Creator.UpdateTheme(TargetObject, isTween)
                             gradient[prop] = propValue
                         end
                     end
-                elseif type(value) == "number" then
+                elseif typeof(value) == "number" then
                     if not isTween then
                         objData.Object[Property] = value
                     else
@@ -554,7 +554,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
         CanDraggable = true
     }
     
-    if not dragFrames or type(dragFrames) ~= "table" then
+    if not dragFrames or typeof(dragFrames) ~= "table" then
         dragFrames = {mainFrame}
     end
     
@@ -577,7 +577,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                     dragStart = input.Position
                     startPos = mainFrame.Position
                     
-                    if ondrag and type(ondrag) == "function" then 
+                    if ondrag and typeof(ondrag) == "function" then 
                         ondrag(true, currentDragFrame)
                     end
                     
@@ -586,7 +586,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                             dragging = false
                             currentDragFrame = nil
                             
-                            if ondrag and type(ondrag) == "function" then 
+                            if ondrag and typeof(ondrag) == "function" then 
                                 ondrag(false, nil)
                             end
                         end
@@ -665,9 +665,9 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, Them
             Icon = Img, 
             Size = UDim2.new(1,0,1,0), 
             Colors = { 
-                (IsThemeTag and "Icon" or false),
+                (IsThemeTag and (ThemeTagName or "Icon") or false),
                 "Button" 
-            } 
+            }
         }).IconFrame
         IconLabel.Parent = ImageFrame
     elseif string.find(Img,"http") then
