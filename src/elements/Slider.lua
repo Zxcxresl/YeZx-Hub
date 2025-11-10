@@ -78,7 +78,7 @@ function Element:New(Config)
             },
         }, {
             Creator.NewRoundFrame(99, "Squircle", {
-                Size = UDim2.new(0, Slider.ThumbSize, 0, Slider.ThumbSize),
+                Size = UDim2.new(0, Config.Window.NewElements and (Slider.ThumbSize*1.75) or (Slider.ThumbSize+2), 0, Slider.ThumbSize+2),
                 Position = UDim2.new(1, 0, 0.5, 0),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 ThemeTag = {
@@ -92,7 +92,7 @@ function Element:New(Config)
     Slider.UIElements.SliderContainer = New("Frame", {
         Size = UDim2.new(0, Slider.Width, 0, 0),
         AutomaticSize = "Y",
-        Position = UDim2.new(1, Config.Window.NewElements and -12 or 0, 0.5, 0),
+        Position = UDim2.new(1, Config.Window.NewElements and -12-8 or 0, 0.5, 0),
         AnchorPoint = Vector2.new(1,0.5),
         BackgroundTransparency = 1,
         Parent = Slider.SliderFrame.UIElements.Main,
@@ -176,7 +176,7 @@ function Element:New(Config)
                             HoldingSlider = false
                             ScrollingFrameParent.ScrollingEnabled = true
                             
-                            Tween(Slider.UIElements.SliderIcon.Frame.Thumb, .12, { Size = UDim2.new(0,Slider.ThumbSize,0,Slider.ThumbSize) }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+                            Tween(Slider.UIElements.SliderIcon.Frame.Thumb, .2, { Size = UDim2.new(0,Config.Window.NewElements and (Slider.ThumbSize*1.75) or (Slider.ThumbSize+2),0,Slider.ThumbSize+2) }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
                         end
                     end)
                 end
@@ -223,7 +223,7 @@ function Element:New(Config)
         Slider:Set(Value, input)
         
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            Tween(Slider.UIElements.SliderIcon.Frame.Thumb, .12, { Size = UDim2.new(0,Slider.ThumbSize+8,0,Slider.ThumbSize+8) }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            Tween(Slider.UIElements.SliderIcon.Frame.Thumb, .24, { Size = UDim2.new(0,(Config.Window.NewElements and (Slider.ThumbSize*1.75) or (Slider.ThumbSize))+8,0,Slider.ThumbSize+8) }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
     end)
     

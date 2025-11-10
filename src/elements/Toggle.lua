@@ -62,9 +62,9 @@ function Element:New(Config)
     
     local ToggleFrame, ToggleFunc
     if Toggle.Type == "Toggle" then
-        ToggleFrame, ToggleFunc = CreateToggle(Toggled, Toggle.Icon, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback)
+        ToggleFrame, ToggleFunc = CreateToggle(Toggled, Toggle.Icon, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config.Window.NewElements)
     elseif Toggle.Type == "Checkbox" then
-        ToggleFrame, ToggleFunc = CreateCheckbox(Toggled, Toggle.Icon, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback)
+        ToggleFrame, ToggleFunc = CreateCheckbox(Toggled, Toggle.Icon, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config)
     else
         error("Unknown Toggle Type: " .. tostring(Toggle.Type))
     end

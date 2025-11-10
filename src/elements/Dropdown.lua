@@ -54,7 +54,7 @@ function Element:New(Config)
         Title = Dropdown.Title,
         Desc = Dropdown.Desc,
         Parent = Config.Parent,
-        TextOffset = Dropdown.Width,
+        TextOffset = Dropdown.Callback and Dropdown.Width or 20,
         Hover = not Dropdown.Callback and true or false,
         Tab = Config.Tab,
         Index = Config.Index,
