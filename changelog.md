@@ -1,6 +1,7 @@
-# 1.6.6
+# 1.6.61
 ## Changelog:
-- Fixed `Image` in `Paragraph` element (element image)
-- Fixed Multi Dropdown
-- Dropdown is now more advanced (example at [main_example.lua](https://github.com/Footagesus/WindUI/blob/main/main_example.lua))
-- 
+- Fixed Dropdown Tab Desc Width
+- Added `Locked` to Dropdown Tabs;
+- Added `:LockValues({})` to `Dropdown`
+- Added more theme tags (more soon)
+- Reworked `Toggle` and `Checkbox`

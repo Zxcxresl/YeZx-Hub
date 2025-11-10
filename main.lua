@@ -1,4 +1,6 @@
-local src = loadstring(game:HttpGet("https://raw.githubusercontent.com/Zxcxresl/YeZx-Hub/main/src/Init.lua"))()
+-- This is just an example.
+
+local WindUI = require("./src/Init")
 
 local Localization = WindUI:Localization({
     Enabled = true,
