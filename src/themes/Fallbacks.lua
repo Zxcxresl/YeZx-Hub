@@ -1,6 +1,9 @@
 return {
     -- More soon!
     
+    White = Color3.new(1,1,1),
+    Black = Color3.new(0,0,0),
+    
     Dialog = "Accent",
     
     Background = "Accent",
@@ -9,13 +12,13 @@ return {
     
     WindowBackground = "Background",
     
-    WindowShadow = Color3.new(0,0,0),
+    WindowShadow = "Black",
     --WindowShadowTransparency = .7,
     
-    WindowTopbarButtonIcon = "Icon",
     WindowTopbarTitle = "Text",
     WindowTopbarAuthor = "Text",
-    WindowTopbarIcon = "Text",
+    WindowTopbarIcon = "Icon",
+    WindowTopbarButtonIcon = "Icon",
     
     TabBackground = "Hover",
     TabTitle = "Text",
@@ -38,5 +41,8 @@ return {
     DialogContent = "Text",
     DialogIcon = "Icon",
     
+    Toggle = "Button",
     
+    Checkbox = "Button",
+    CheckboxIcon = "White",
 }
