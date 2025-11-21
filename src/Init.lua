@@ -17,11 +17,20 @@ local WindUI = {
     Services = require("./utils/services/Init"),
     
     OnThemeChangeFunction = nil,
+    
+    cloneref = nil,
 }
 
 
-local HttpService = game:GetService("HttpService")
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
 
+WindUI.cloneref = cloneref
+
+local HttpService = cloneref(game:GetService("HttpService"))
+local Players = cloneref(game:GetService("Players"))
+local CoreGui= cloneref(game:GetService("CoreGui"))
+
+local LocalPlayer = Players.LocalPlayer or nil
 
 local Package = HttpService:JSONDecode(require("../build/package"))
 if Package then
@@ -41,11 +50,10 @@ local Tween = Creator.Tween
 
 local Acrylic = require("./utils/Acrylic/Init")
 
-local LocalPlayer = game:GetService("Players") and game:GetService("Players").LocalPlayer or nil
 
 local ProtectGui = protectgui or (syn and syn.protect_gui) or function() end
 
-local GUIParent = gethui and gethui() or (game.CoreGui or game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+local GUIParent = gethui and gethui() or (CoreGui or game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 
 
 WindUI.ScreenGui = New("ScreenGui", {
@@ -93,6 +101,12 @@ ProtectGui(WindUI.DropdownGui)
 
 Creator.Init(WindUI)
 
+
+function WindUI:SetParent(parent)
+    WindUI.ScreenGui.Parent = parent
+    WindUI.NotificationGui.Parent = parent
+    WindUI.DropdownGui.Parent = parent
+end
 math.clamp(WindUI.TransparencyValue, 0, 1)
 
 local Holder = WindUI.NotificationModule.Init(WindUI.NotificationGui)
@@ -254,7 +268,7 @@ function WindUI:CreateWindow(Config)
     
     
     local hwid = gethwid or function()
-        return game:GetService("Players").LocalPlayer.UserId
+        return Players.LocalPlayer.UserId
     end
     
     local Filename = hwid()
@@ -267,14 +281,27 @@ function WindUI:CreateWindow(Config)
         end
     
         local keyPath = (Config.Folder or "Temp") .. "/" .. Filename .. ".key"
-    
-        if not Config.KeySystem.API then
+        
+        if Config.KeySystem.KeyValidator then
+            if Config.KeySystem.SaveKey and isfile(keyPath) then
+                local savedKey = readfile(keyPath)
+                local isValid = Config.KeySystem.KeyValidator(savedKey)
+                
+                if isValid then
+                    CanLoadWindow = true
+                else
+                    loadKeysystem()
+                end
+            else
+                loadKeysystem()
+            end
+        elseif not Config.KeySystem.API then
             if Config.KeySystem.SaveKey and isfile(keyPath) then
                 local savedKey = readfile(keyPath)
                 local isKey = (type(Config.KeySystem.Key) == "table")
                     and table.find(Config.KeySystem.Key, savedKey)
                     or tostring(Config.KeySystem.Key) == tostring(savedKey)
-    
+                    
                 if isKey then
                     CanLoadWindow = true
                 else
@@ -287,7 +314,7 @@ function WindUI:CreateWindow(Config)
             if isfile(keyPath) then
                 local fileKey = readfile(keyPath)
                 local isSuccess = false
-    
+                 
                 for _, i in next, Config.KeySystem.API do
                     local serviceData = WindUI.Services[i.Type]
                     if serviceData then
@@ -295,7 +322,7 @@ function WindUI:CreateWindow(Config)
                         for _, argName in next, serviceData.Args do
                             table.insert(args, i[argName])
                         end
-    
+                        
                         local service = serviceData.New(table.unpack(args))
                         local success = service.Verify(fileKey)
                         if success then
@@ -304,14 +331,14 @@ function WindUI:CreateWindow(Config)
                         end
                     end
                 end
-    
+                    
                 CanLoadWindow = isSuccess
                 if not isSuccess then loadKeysystem() end
             else
                 loadKeysystem()
             end
         end
-    
+        
         repeat task.wait() until CanLoadWindow
     end
 
