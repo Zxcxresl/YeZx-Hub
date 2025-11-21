@@ -1,4 +1,7 @@
-local HttpService = game:GetService("HttpService")
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+
+
+local HttpService = cloneref(game:GetService("HttpService"))
 
 local Window 
 
