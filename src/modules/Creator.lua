@@ -1,9 +1,13 @@
-local RunService = game:GetService("RunService")
+
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+
+local RunService = cloneref(game:GetService("RunService"))
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local TweenService = cloneref(game:GetService("TweenService"))
+local LocalizationService = cloneref(game:GetService("LocalizationService"))
+local HttpService = cloneref(game:GetService("HttpService"))
+
 local RenderStepped = RunService.Heartbeat
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local LocalizationService = game:GetService("LocalizationService")
-local HttpService = game:GetService("HttpService")
 
 local IconsURL = "https://raw.githubusercontent.com/Footagesus/Icons/main/Main-v2.lua"
 
@@ -419,8 +423,8 @@ function Creator.SetLanguage(lang)
     Creator.UpdateLang()
 end
 
-function Creator.Icon(Icon)
-    return Icons.Icon(Icon)
+function Creator.Icon(Icon, formatdefault)
+    return Icons.Icon(Icon, nil, formatdefault ~= false)
 end
 
 function Creator.AddIcons(packName, iconsData)
