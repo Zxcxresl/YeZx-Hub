@@ -2,10 +2,12 @@ local Creator = require("../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
-local UserInputService = game:GetService("UserInputService")
-local TouchInputService = game:GetService("TouchInputService")
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local TouchInputService = cloneref(game:GetService("TouchInputService"))
+local RunService = cloneref(game:GetService("RunService"))
+local Players = cloneref(game:GetService("Players"))
 
 local RenderStepped = RunService.RenderStepped
 local LocalPlayer = Players.LocalPlayer

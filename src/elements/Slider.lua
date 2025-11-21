@@ -2,6 +2,9 @@ local Creator = require("../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+
+
 local Element = {}
 
 local HoldingSlider = false
@@ -156,8 +159,8 @@ function Element:New(Config)
                     isTouch = (input.UserInputType == Enum.UserInputType.Touch)
                     ScrollingFrameParent.ScrollingEnabled = false
                     HoldingSlider = true
-                    moveconnection = game:GetService("RunService").RenderStepped:Connect(function()
-                        local inputPosition = isTouch and input.Position.X or game:GetService("UserInputService"):GetMouseLocation().X
+                    moveconnection = cloneref(game:GetService("RunService")).RenderStepped:Connect(function()
+                        local inputPosition = isTouch and input.Position.X or cloneref(game:GetService("UserInputService")):GetMouseLocation().X
                         local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.AbsoluteSize.X, 0, 1)
                         Value = CalculateValue(Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min))
     
@@ -169,7 +172,7 @@ function Element:New(Config)
                             Creator.SafeCallback(Slider.Callback, FormatValue(Value))
                         end
                     end)
-                    releaseconnection = game:GetService("UserInputService").InputEnded:Connect(function(endInput)
+                    releaseconnection = cloneref(game:GetService("UserInputService")).InputEnded:Connect(function(endInput)
                         if (endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch) and input == endInput then
                             moveconnection:Disconnect()
                             releaseconnection:Disconnect()

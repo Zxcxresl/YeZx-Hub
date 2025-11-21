@@ -15,6 +15,7 @@ function Element:New(Config)
         Locked = Config.Locked or false,
         Value = Config.Value,
         Icon = Config.Icon or nil,
+        IconSize = Config.IconSize or 23, -- from 26 to 0
         Type = Config.Type or "Toggle",
         Callback = Config.Callback or function() end,
         UIElements = {}
@@ -62,9 +63,9 @@ function Element:New(Config)
     
     local ToggleFrame, ToggleFunc
     if Toggle.Type == "Toggle" then
-        ToggleFrame, ToggleFunc = CreateToggle(Toggled, Toggle.Icon, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config.Window.NewElements)
+        ToggleFrame, ToggleFunc = CreateToggle(Toggled, Toggle.Icon, Toggle.IconSize, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config.Window.NewElements)
     elseif Toggle.Type == "Checkbox" then
-        ToggleFrame, ToggleFunc = CreateCheckbox(Toggled, Toggle.Icon, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config)
+        ToggleFrame, ToggleFunc = CreateCheckbox(Toggled, Toggle.Icon, Toggle.IconSize, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config)
     else
         error("Unknown Toggle Type: " .. tostring(Toggle.Type))
     end
