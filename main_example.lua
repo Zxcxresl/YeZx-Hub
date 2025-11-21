@@ -32,12 +32,15 @@ WindUI:Popup({
     }
 })
 
+
+
 -- */  Window  /* --
 local Window = WindUI:CreateWindow({
     Title = ".ftgs hub  |  WindUI Example",
     Author = "by .ftgs • Footagesus",
     Folder = "ftgshub",
-    Icon = "bird",
+    Icon = "sfsymbols:appleLogo",
+    IconSize = 22*2,
     NewElements = true,
     --Size = UDim2.fromOffset(700,700),
     
@@ -55,6 +58,14 @@ local Window = WindUI:CreateWindow({
             Color3.fromHex("#30FF6A"), 
             Color3.fromHex("#e7ff2f")
         )
+    },
+    
+    KeySystem = {
+        Title = "Key System Example  |  WindUI Example",
+        Note = "Key System. Key: 1234",
+        KeyValidator = function(EnteredKey)
+            return EnteredKey == "1234" -- if key == "1234" then return true else return false end
+        end
     }
 })
 
@@ -800,7 +811,7 @@ do
     local InviteCode = "ftgs-development-hub-1300692552005189632"
     local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
 
-    local Response = game:GetService("HttpService"):JSONDecode(WindUI.Creator.Request({
+    local Response = WindUI.cloneref(game:GetService("HttpService")):JSONDecode(WindUI.Creator.Request({
         Url = DiscordAPI,
         Method = "GET",
         Headers = {

@@ -26,6 +26,7 @@
 ### Links
 - [Discord Server](https://discord.gg/ftgs-development-hub-1300692552005189632)
 - [Documentation](https://Footagesus.github.io/WindUI-Docs/)
+- [Installation](https://footagesus.github.io/WindUI-Docs/docs/installation)
 
 - [Example](/main_example.lua) (wip)
   ```luau
