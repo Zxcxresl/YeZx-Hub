@@ -3,7 +3,10 @@ local New = Creator.New
 local NewRoundFrame = Creator.NewRoundFrame
 local Tween = Creator.Tween
 
-local UserInputService = game:GetService("UserInputService")
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+
+
+local UserInputService = cloneref(game:GetService("UserInputService"))
 
 
 local function Color3ToHSB(color)
@@ -353,6 +356,71 @@ return function(Config)
         }),
     }, nil, true)
     
+    
+    local HoverOutline, HoverOutlineTable = NewRoundFrame(Element.UICorner, "Squircle-Outline", {
+        Size = UDim2.new(1,0,1,0),
+        ImageTransparency = 1, -- 0.25
+        Active = false,
+        ThemeTag = {
+            ImageColor3 = "Text",
+        },
+        Parent = ElementFullFrame,
+    }, {
+        New("UIListLayout", {
+            FillDirection = "Horizontal",
+            VerticalAlignment = "Center",
+            HorizontalAlignment = "Center",
+            Padding = UDim.new(0,8)
+        }),
+        New("UIGradient", {
+            Name = "HoverGradient",
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+                ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
+                ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+            }),
+            Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),     
+                NumberSequenceKeypoint.new(0.25, 0.9),
+                NumberSequenceKeypoint.new(0.5, 0.3), 
+                NumberSequenceKeypoint.new(0.75, 0.9), 
+                NumberSequenceKeypoint.new(1, 1)      
+            }),
+        }),
+    }, nil, true)
+    
+    local Hover, HoverTable = NewRoundFrame(Element.UICorner, "Squircle", {
+        Size = UDim2.new(1,0,1,0),
+        ImageTransparency = 1, -- 0.88
+        Active = false,
+        ThemeTag = {
+            ImageColor3 = "Text",
+        },
+        Parent = ElementFullFrame,
+    }, {
+        New("UIGradient", {
+            Name = "HoverGradient",
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+                ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
+                ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))
+            }),
+            Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),     
+                NumberSequenceKeypoint.new(0.25, 0.9),
+                NumberSequenceKeypoint.new(0.5, 0.3), 
+                NumberSequenceKeypoint.new(0.75, 0.9), 
+                NumberSequenceKeypoint.new(1, 1)      
+            }),
+        }),
+        New("UIListLayout", {
+            FillDirection = "Horizontal",
+            VerticalAlignment = "Center",
+            HorizontalAlignment = "Center",
+            Padding = UDim.new(0,8)
+        }),
+    }, nil, true)
+    
     local Main, MainTable = NewRoundFrame(Element.UICorner, "Squircle", {
         Size = UDim2.new(1,0,0,0),
         AutomaticSize = "Y",
@@ -388,12 +456,20 @@ return function(Config)
     if Element.Hover then
         Creator.AddSignal(Main.MouseEnter, function()
             if CanHover then
-                Tween(Main, .05, {ImageTransparency = Element.Color and .15 or .9}):Play()
+                Tween(Main, .12, {ImageTransparency = Element.Color and .15 or .9}):Play()
+                Tween(Hover, .12, {ImageTransparency = .9}):Play()
+                Tween(HoverOutline, .12, {ImageTransparency = .8}):Play()
+                Creator.AddSignal(Main.MouseMoved, function(x,y)
+                    Hover.HoverGradient.Offset = Vector2.new(((x - Main.AbsolutePosition.X) / Main.AbsoluteSize.X) - 0.5, 0)
+                    HoverOutline.HoverGradient.Offset = Vector2.new(((x - Main.AbsolutePosition.X) / Main.AbsoluteSize.X) - 0.5, 0)
+                end)
             end
         end)
         Creator.AddSignal(Main.InputEnded, function()
             if CanHover then
-                Tween(Main, .05, {ImageTransparency = Element.Color and .05 or .93}):Play()
+                Tween(Main, .12, {ImageTransparency = Element.Color and .05 or .93}):Play()
+                Tween(Hover, .12, {ImageTransparency = 1}):Play()
+                Tween(HoverOutline, .12, {ImageTransparency = 1}):Play()
             end
         end)
     end
@@ -584,7 +660,7 @@ return function(Config)
             Parent = Highlight
         })
         
-        HighlightOutline.ImageTransparency = 0.25
+        HighlightOutline.ImageTransparency = 0.65
         Highlight.ImageTransparency = 0.88
         
         Tween(OutlineGradient, 0.75, {
@@ -614,6 +690,8 @@ return function(Config)
                 LockedTable:SetType(newShape)
                 HighlightTable:SetType(newShape)
                 HighlightOutlineTable:SetType(newShape .. "-Outline")
+                HoverTable:SetType(newShape)
+                HoverOutlineTable:SetType(newShape .. "-Outline")
             end
         end
     end

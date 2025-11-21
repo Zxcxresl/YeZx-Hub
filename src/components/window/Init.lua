@@ -1,6 +1,7 @@
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
 
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local RunService = cloneref(game:GetService("RunService"))
 
 local CurrentCamera = workspace.CurrentCamera
 
@@ -160,7 +161,7 @@ return function(Config)
     }, {
         New("ImageLabel", {
             Size = UDim2.new(0,70,0,70),
-            Image = Creator.Icon("expand")[1],
+            Image = Creator.Icon("expand")[1],  
             ImageRectOffset = Creator.Icon("expand")[2].ImageRectPosition,
             ImageRectSize = Creator.Icon("expand")[2].ImageRectSize,
             BackgroundTransparency = 1,
@@ -317,7 +318,7 @@ return function(Config)
     local UserIcon
     if Window.User then
         local function GetUserThumb()
-            local ImageId, _ = game:GetService("Players"):GetUserThumbnailAsync(
+            local ImageId, _ = cloneref(game:GetService("Players")):GetUserThumbnailAsync(
                 Window.User.Anonymous and 1 or game.Players.LocalPlayer.UserId, 
                 Enum.ThumbnailType.HeadShot, 
                 Enum.ThumbnailSize.Size420x420
@@ -927,6 +928,12 @@ return function(Config)
     task.spawn(function()
         if Window.Icon then
             
+            local WindowIconContainer = New("Frame", {
+                Size = UDim2.new(0,22,0,22),
+                BackgroundTransparency = 1,
+                Parent = Window.UIElements.Main.Main.Topbar.Left,
+            })
+            
             WindowIcon = Creator.Image(
                 Window.Icon,
                 Window.Title,
@@ -937,8 +944,10 @@ return function(Config)
                 Window.IconThemed,
                 "WindowTopbarIcon"
             )
-            WindowIcon.Parent = Window.UIElements.Main.Main.Topbar.Left
+            WindowIcon.Parent = WindowIconContainer
             WindowIcon.Size = UDim2.new(0,Window.IconSize,0,Window.IconSize)
+            WindowIcon.Position = UDim2.new(0.5,0,0.5,0)
+            WindowIcon.AnchorPoint = Vector2.new(0.5,0.5)
             
             Window.OpenButtonMain:SetIcon(Window.Icon)
             

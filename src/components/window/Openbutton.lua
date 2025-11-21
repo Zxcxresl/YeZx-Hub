@@ -4,7 +4,11 @@ local Creator = require("../../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
-local UserInputService = game:GetService("UserInputService")
+
+local cloneref = (cloneref or clonereference or function(instance) return instance end)
+
+
+local UserInputService = cloneref(game:GetService("UserInputService"))
 
 
 function OpenButton.New(Window)
