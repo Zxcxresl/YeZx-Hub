@@ -15,32 +15,59 @@ do
     if ok then
         WindUI = result
     else 
-        WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+        WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
     end
 end
 
+--[[
 
-WindUI:Popup({
-    Title = "Welcome to the WindUI!",
-    Icon = "bird",
-    Content = "Hello!",
-    Buttons = {
-        {
-            Title = "Hahaha",
-            Icon = "bird",
+WindUI.Creator.AddIcons("solar", {
+    ["CheckSquareBold"] = "rbxassetid://132438947521974",
+    ["CursorSquareBold"] = "rbxassetid://120306472146156",
+    ["FileTextBold"] = "rbxassetid://89294979831077",
+    ["FolderWithFilesBold"] = "rbxassetid://74631950400584",
+    ["HamburgerMenuBold"] = "rbxassetid://134384554225463",
+    ["Home2Bold"] = "rbxassetid://92190299966310",
+    ["InfoSquareBold"] = "rbxassetid://119096461016615",
+    ["PasswordMinimalisticInputBold"] = "rbxassetid://109919668957167",
+    ["SolarSquareTransferHorizontalBold"] = "rbxassetid://125444491429160",
+})--]]
+
+
+function createPopup()
+    return WindUI:Popup({
+        Title = "Welcome to the WindUI!",
+        Icon = "bird",
+        Content = "Hello!",
+        Buttons = {
+            {
+                Title = "Hahaha",
+                Icon = "bird",
+                Variant = "Tertiary"
+            },
+            {
+                Title = "Hahaha",
+                Icon = "bird",
+                Variant = "Tertiary"
+            },
+            {
+                Title = "Hahaha",
+                Icon = "bird",
+                Variant = "Tertiary"
+            }
         }
-    }
-})
+    })
+end
 
 
 
 -- */  Window  /* --
 local Window = WindUI:CreateWindow({
     Title = ".ftgs hub  |  WindUI Example",
-    Author = "by .ftgs • Footagesus",
+    --Author = "by .ftgs • Footagesus",
     Folder = "ftgshub",
-    Icon = "sfsymbols:appleLogo",
-    IconSize = 22*2,
+    Icon = "solar:folder-2-bold-duotone",
+    --IconSize = 22*2,
     NewElements = true,
     --Size = UDim2.fromOffset(700,700),
     
@@ -59,16 +86,28 @@ local Window = WindUI:CreateWindow({
             Color3.fromHex("#e7ff2f")
         )
     },
-    
+    Topbar = {
+        Height = 44,
+        ButtonsType = "Mac", -- Default or Mac
+    },
+
+    --[[
     KeySystem = {
         Title = "Key System Example  |  WindUI Example",
         Note = "Key System. Key: 1234",
         KeyValidator = function(EnteredKey)
-            return EnteredKey == "1234" -- if key == "1234" then return true else return false end
+            if EnteredKey == "1234" then
+                createPopup()
+                return true
+            end
+            return false
+            -- return EnteredKey == "1234" -- if key == "1234" then return true else return false end
         end
     }
+    ]]
 })
 
+--createPopup()
 
 --Window:SetUIScale(.8)
 
@@ -77,7 +116,8 @@ do
     Window:Tag({
         Title = "v" .. WindUI.Version,
         Icon = "github",
-        Color = Color3.fromHex("#6b31ff")
+        Color = Color3.fromHex("#1c1c1c"),
+        Border = true,
     })
 end
 
@@ -114,6 +154,14 @@ do
     -- WindUI:SetTheme("Stylish")
 end
 
+
+-- */  Colors  /* --
+local Purple = Color3.fromHex("#7775F2")
+local Yellow = Color3.fromHex("#ECA201")
+local Green = Color3.fromHex("#10C550")
+local Grey = Color3.fromHex("#83889E")
+local Blue = Color3.fromHex("#257AF7")
+local Red = Color3.fromHex("#EF4F1D")
 
 
 -- */ Other Functions /* --
@@ -247,7 +295,10 @@ end
 do
     local AboutTab = Window:Tab({
         Title = "About WindUI",
-        Icon = "info",
+        Desc = "Description Example", 
+        Icon = "solar:info-square-bold",
+        IconColor = Grey,
+        IconShape = "Square",
     })
     
     local AboutSection = AboutTab:Section({
@@ -255,7 +306,7 @@ do
     })
     
     AboutSection:Image({
-        Image = "https://repository-images.githubusercontent.com/880118829/428bedb1-dcbd-43d5-bc7f-3beb2e9e0177",
+        Image = "https://repository-images.githubusercontent.com/880118829/22c020eb-d1b1-4b34-ac4d-e33fd88db38d",
         AspectRatio = "16:9",
         Radius = 9,
     })
@@ -326,32 +377,79 @@ local OtherSection = Window:Section({
 })
 
 
--- */ Using Nebula Icons /* --
-do
-    local NebulaIcons = loadstring(game:HttpGetAsync("https://raw.nebulasoftworks.xyz/nebula-icon-library-loader"))()
-    
-    -- Adding icons (e.g. Fluency)
-    WindUI.Creator.AddIcons("fluency",    NebulaIcons.Fluency)
-    --               ^ Icon name          ^ Table of Icons
-    
-    -- You can also add nebula icons
-    WindUI.Creator.AddIcons("nebula",    NebulaIcons.nebulaIcons)
-    
-    -- Usage ↑ ↓
-    
-    local TestSection = Window:Section({
-        Title = "Custom icons usage test (nebula)",
-        Icon = "nebula:nebula",
-    })
-end
 
+
+-- */  Overview Tab  /* --
+do
+    local OverviewTab = ElementsSection:Tab({
+        Title = "Overview",
+        Icon = "solar:home-2-bold",
+        IconColor = Grey,
+        IconShape = "Square",
+    })
+    
+    local OverviewSection1 = OverviewTab:Section({
+        Title = "Group's Example"
+    })
+    
+    local OverviewGroup1 = OverviewTab:Group({})
+    
+    OverviewGroup1:Button({ Title = "Button 1", Justify = "Center", Icon = "", Callback = function() print("clicked button 1") end })
+    OverviewGroup1:Space()
+    OverviewGroup1:Button({ Title = "Button 2", Justify = "Center", Icon = "", Callback = function() print("clicked button 2") end })
+    
+    OverviewTab:Space()
+    
+    local OverviewGroup2 = OverviewTab:Group({})
+    
+    OverviewGroup2:Button({ Title = "Button 1", Justify = "Center", Icon = "", Callback = function() print("clicked button 1") end })
+    OverviewGroup2:Space()
+    OverviewGroup2:Toggle({ Title = "Toggle 2",  Callback = function(v) print("clicked toggle 2:", v) end })
+    OverviewGroup2:Space()
+    OverviewGroup2:Colorpicker({ Title = "Colorpicker 3", Default = Color3.fromHex("#30ff6a"), Callback = function(color) print(color) end })
+    
+    OverviewTab:Space()
+    
+    local OverviewGroup3 = OverviewTab:Group({})
+    
+    
+    local OverviewSection1 = OverviewGroup3:Section({
+        Title = "Section 1",
+        Desc = "Section exampleee",
+        Box = true,
+        BoxBorder = true,
+        Opened = true,
+    })
+    OverviewSection1:Button({ Title = "Button 1", Justify = "Center", Icon = "", Callback = function() print("clicked button 1") end })
+    OverviewSection1:Space()
+    OverviewSection1:Toggle({ Title = "Toggle 2",  Callback = function(v) print("clicked toggle 2:", v) end })
+    
+    
+    OverviewGroup3:Space()
+    
+    
+    local OverviewSection2 = OverviewGroup3:Section({
+        Title = "Section 2",
+        Box = true,
+        BoxBorder = true,
+        Opened = true,
+    })
+    OverviewSection2:Button({ Title = "Button 1", Justify = "Center", Icon = "", Callback = function() print("clicked button 1") end })
+    OverviewSection2:Space()
+    OverviewSection2:Button({ Title = "Button 2", Justify = "Center", Icon = "", Callback = function() print("clicked button 2") end })
+
+    --OverviewTab:Space()
+    
+end
 
 
 -- */  Toggle Tab  /* --
 do
     local ToggleTab = ElementsSection:Tab({
         Title = "Toggle",
-        Icon = "arrow-left-right"
+        Icon = "solar:check-square-bold",
+        IconColor = Green,
+        IconShape = "Square",
     })
     
     
@@ -365,6 +463,13 @@ do
         Title = "Toggle",
         Desc = "Toggle example"
     })
+    
+    ToggleTab:Space()
+    
+    local ToggleGroup1 = ToggleTab:Group()
+    ToggleGroup1:Toggle({})
+    ToggleGroup1:Space()
+    ToggleGroup1:Toggle({})
     
     ToggleTab:Space()
     
@@ -387,12 +492,14 @@ do
     ToggleTab:Toggle({
         Title = "Toggle",
         Locked = true,
+        LockedTitle = "This element is locked",
     })
     
     ToggleTab:Toggle({
         Title = "Toggle",
         Desc = "Toggle example",
         Locked = true,
+        LockedTitle = "This element is locked",
     })
 end
 
@@ -401,7 +508,9 @@ end
 do
     local ButtonTab = ElementsSection:Tab({
         Title = "Button",
-        Icon = "mouse-pointer-click",
+        Icon = "solar:cursor-square-bold",
+        IconColor = Blue,
+        IconShape = "Square",
     })
     
     
@@ -439,8 +548,32 @@ do
     ButtonTab:Space()
     
     ButtonTab:Button({
-        Title = "Button",
-        Desc = "Button example",
+        Title = "Notify Button",
+        --Desc = "Button example",
+        Callback = function()
+            WindUI:Notify({
+                Title = "Hello",
+                Content = "Welcome to the WindUI Example!",
+                Icon = "solar:bell-bold",
+                Duration = 5,
+                CanClose = false,
+            })
+        end
+    })
+    
+    
+    ButtonTab:Button({
+        Title = "Notify Button 2",
+        --Desc = "Button example",
+        Callback = function()
+            WindUI:Notify({
+                Title = "Hello",
+                Content = "Welcome to the WindUI Example!",
+                --Icon = "solar:bell-bold",
+                Duration = 5,
+                CanClose = false,
+            })
+        end
     })
     
     ButtonTab:Space()
@@ -448,6 +581,7 @@ do
     ButtonTab:Button({
         Title = "Button",
         Locked = true,
+        LockedTitle = "This element is locked",
     })
     
     
@@ -455,6 +589,7 @@ do
         Title = "Button",
         Desc = "Button example",
         Locked = true,
+        LockedTitle = "This element is locked",
     })
 end
 
@@ -463,7 +598,9 @@ end
 do
     local InputTab = ElementsSection:Tab({
         Title = "Input",
-        Icon = "text-cursor-input",
+        Icon = "solar:password-minimalistic-input-bold",
+        IconColor = Purple,
+        IconShape = "Square",
     })
     
     
@@ -513,6 +650,7 @@ do
     InputTab:Input({
         Title = "Input",
         Locked = true,
+        LockedTitle = "This element is locked",
     })
     
     
@@ -520,6 +658,129 @@ do
         Title = "Input",
         Desc = "Input example",
         Locked = true,
+        LockedTitle = "This element is locked",
+    })
+end
+
+
+-- */  Slider Tab  /* --
+do
+    local SliderTab = ElementsSection:Tab({
+        Title = "Slider",
+        Icon = "solar:square-transfer-horizontal-bold",
+        IconColor = Green,
+        IconShape = "Square",
+    })
+    
+    SliderTab:Section({
+        Title = "Default Slider with Tooltip and without textbox",
+        TextSize = 14,
+    })
+    
+    SliderTab:Slider({
+        Title = "Slider Example",
+        Desc = "Hahahahaha hello",
+        IsTooltip = true,
+        IsTextbox = false,
+        Width = 200,
+        Step = 1,
+        Value = {
+            Min = 0,
+            Max = 200,
+            Default = 100,
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
+
+    SliderTab:Space()
+    
+    SliderTab:Section({
+        Title = "Slider without description",
+        TextSize = 14,
+    })
+    
+    SliderTab:Slider({
+        Title = "Slider Example",
+        Step = 1,
+        Width = 200,
+        Value = {
+            Min = 0,
+            Max = 200,
+            Default = 100,
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
+
+    SliderTab:Space()
+    
+    SliderTab:Section({
+        Title = "Slider without titles",
+        TextSize = 14,
+    })
+    
+    SliderTab:Slider({
+        IsTooltip = true,
+        Step = 1,
+        Value = {
+            Min = 0,
+            Max = 200,
+            Default = 100,
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
+
+    SliderTab:Space()
+    
+    SliderTab:Section({
+        Title = "Slider with icons ('from' only)",
+        TextSize = 14,
+    })
+    
+    SliderTab:Slider({
+        IsTooltip = true,
+        Step = 1,
+        Value = {
+            Min = 0,
+            Max = 200,
+            Default = 100,
+        },
+        Icons = {
+            From = "sfsymbols:sunMinFill",
+            --To = "sfsymbols:sunMaxFill",
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
+
+    SliderTab:Space()
+    
+    SliderTab:Section({
+        Title = "Slider with icons (from & to)",
+        TextSize = 14,
+    })
+    
+    SliderTab:Slider({
+        IsTooltip = true,
+        Step = 1,
+        Value = {
+            Min = 0,
+            Max = 100,
+            Default = 50,
+        },
+        Icons = {
+            From = "sfsymbols:sunMinFill",
+            To = "sfsymbols:sunMaxFill",
+        },
+        Callback = function(value)
+            print(value)
+        end
     })
 end
 
@@ -528,7 +789,9 @@ end
 do
     local DropdownTab = ElementsSection:Tab({
         Title = "Dropdown",
-        Icon = "logs",
+        Icon = "solar:hamburger-menu-bold",
+        IconColor = Yellow,
+        IconShape = "Square",
     })
     
     
@@ -575,6 +838,35 @@ do
     
     DropdownTab:Space()
     
+    DropdownTab:Dropdown({
+        Title = "Multi Dropdown",
+        Values = {
+            "Привет", "Hello", "Сәлем", "Bonjour"
+        },
+        Value = nil,
+        AllowNone = true,
+        Multi = true,
+        Callback = function(selectedValue)
+            print("Selected: " .. selectedValue)
+        end
+    })
+    
+    DropdownTab:Space()
+    
+    DropdownTab:Dropdown({
+        Title = "No Multi Dropdown (default",
+        Values = {
+            "Привет", "Hello", "Сәлем", "Bonjour"
+        },
+        Value = 1,
+        --AllowNone = true,
+        Callback = function(selectedValue)
+            print("Selected: " .. selectedValue)
+        end
+    })
+    
+    DropdownTab:Space()
+    
     
 end
 
@@ -604,7 +896,9 @@ end
 do -- config elements
     local ConfigElementsTab = ConfigUsageSection:Tab({
         Title = "Config Elements",
-        Icon = "square-dashed-mouse-pointer",
+        Icon = "solar:file-text-bold",
+        IconColor = Blue,
+        IconShape = nil,
     })
     
     -- All elements are taken from the official documentation: https://footagesus.github.io/WindUI-Docs/docs
@@ -719,8 +1013,38 @@ do -- config elements
             print(value)
         end
     })
+    ConfigElementsTab:Slider({
+        Flag = "SliderTest2",
+        --Title = "Slider",
+        Icons = {
+            From = "sfsymbols:sunMinFill",
+            To = "sfsymbols:sunMaxFill",
+        },
+        Step = 1,
+        IsTooltip = true,
+        Value = {
+            Min = 0,
+            Max = 100,
+            Default = 50,
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
     
     ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Toggle({
+        Flag = "ToggleTest",
+        Title = "Toggle Panel Background",
+        --Desc = "Toggle Description",
+        --Icon = "house",
+        --Type = "Checkbox",
+        Value = not Window.HidePanelBackground,
+        Callback = function(state) 
+            Window:SetPanelBackground(state)
+        end
+    })
     
     ConfigElementsTab:Toggle({
         Flag = "ToggleTest",
@@ -728,7 +1052,7 @@ do -- config elements
         Desc = "Toggle Description",
         --Icon = "house",
         --Type = "Checkbox",
-        Default = false,
+        Value = false,
         Callback = function(state) 
             print("Toggle Activated" .. tostring(state))
         end
@@ -738,7 +1062,9 @@ end
 do -- config panel
     local ConfigTab = ConfigUsageSection:Tab({
         Title = "Config Usage",
-        Icon = "folder",
+        Icon = "solar:folder-with-files-bold",
+        IconColor = Purple,
+        IconShape = nil,
     })
 
     local ConfigManager = Window.ConfigManager
@@ -752,10 +1078,22 @@ do -- config panel
         end
     })
 
+    ConfigTab:Space()
+    
+    -- local AutoLoadToggle = ConfigTab:Toggle({
+    --     Title = "Enable Auto Load to Selected Config",
+    --     Value = false,
+    --     Callback = function(v)
+    --         Window.CurrentConfig:SetAutoLoad(v)
+    --     end
+    -- })
+
+    -- ConfigTab:Space()
+
     local AllConfigs = ConfigManager:AllConfigs()
     local DefaultValue = table.find(AllConfigs, ConfigName) and ConfigName or nil
 
-    ConfigTab:Dropdown({
+    local AllConfigsDropdown = ConfigTab:Dropdown({
         Title = "All Configs",
         Desc = "Select existing configs",
         Values = AllConfigs,
@@ -763,6 +1101,8 @@ do -- config panel
         Callback = function(value)
             ConfigName = value
             ConfigNameInput:Set(value)
+            
+            AutoLoadToggle:Set(ConfigManager:GetConfig(ConfigName).AutoLoad or false)
         end
     })
 
@@ -773,7 +1113,7 @@ do -- config panel
         Icon = "",
         Justify = "Center",
         Callback = function()
-            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            Window.CurrentConfig = ConfigManager:Config(ConfigName)
             if Window.CurrentConfig:Save() then
                 WindUI:Notify({
                     Title = "Config Saved",
@@ -781,6 +1121,8 @@ do -- config panel
                     Icon = "check",
                 })
             end
+            
+            AllConfigsDropdown:Refresh(ConfigManager:AllConfigs())
         end
     })
 
@@ -799,6 +1141,17 @@ do -- config panel
                     Icon = "refresh-cw",
                 })
             end
+        end
+    })
+
+    ConfigTab:Space()
+
+    ConfigTab:Button({
+        Title = "Print AutoLoad Configs",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            print(HttpService:JSONDecode(ConfigManager:GetAutoLoadConfigs()))
         end
     })
 end
@@ -848,3 +1201,35 @@ do
         
     end
 end
+
+
+
+-- */ Using Nebula Icons /* --
+--[[
+do
+    local NebulaIcons = loadstring(game:HttpGetAsync("https://raw.nebulasoftworks.xyz/nebula-icon-library-loader"))()
+    
+    -- Adding icons (e.g. Fluency)
+    WindUI.Creator.AddIcons("fluency",    NebulaIcons.Fluency)
+    --               ^ Icon name          ^ Table of Icons
+    
+    -- You can also add nebula icons
+    WindUI.Creator.AddIcons("nebula",    NebulaIcons.nebulaIcons)
+    
+    -- Usage ↑ ↓
+    
+    local TestSection = Window:Section({
+        Title = "Custom icons usage test (nebula)",
+        Icon = "nebula:nebula",
+    })
+end
+]]
+--[[
+
+local EndButStartTab = Window:Tab({
+    Title = "EndButStartTab",
+    -- u can use `Before` or `After`
+    Before = AboutTab, -- put this tab Before AboutTab
+    
+})
+--]]

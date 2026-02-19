@@ -1,4 +1,6 @@
+
 -- This is just an example.
+-- old example
 
 local WindUI = require("./src/Init")
 
@@ -355,7 +357,7 @@ local values = {}
 local values2 = {}
 
 -- random lucide icons
-local icons = WindUI.Creator.Icons.Icons.lucide.Icons -- getting all lucide icons
+local icons = WindUI.Creator.Icons.Icons.lucide -- getting all lucide icons
 local iconNames = {}
 
 for name, _ in next, icons do
