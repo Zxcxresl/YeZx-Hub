@@ -8,6 +8,7 @@ local CreateButton = require("../components/ui/Button").New
 function Element:New(ElementConfig)
     ElementConfig.Hover = false  
     ElementConfig.TextOffset = 0  
+    ElementConfig.ParentConfig = ElementConfig  
     ElementConfig.IsButtons = ElementConfig.Buttons and #ElementConfig.Buttons > 0 and true or false  
       
     local ParagraphModule = {  

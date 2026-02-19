@@ -8,12 +8,16 @@ function Element:New(Config)
     local Section = {
         __type = "Section",
         Title = Config.Title or "Section",
+        Desc = Config.Desc,
         Icon = Config.Icon,
         TextXAlignment = Config.TextXAlignment or "Left",
         TextSize = Config.TextSize or 19,
+        DescTextSize = Config.DescTextSize or 16,
         Box = Config.Box or false,
+        BoxBorder = Config.BoxBorder or false,
         FontWeight = Config.FontWeight or Enum.FontWeight.SemiBold,
         TextTransparency = Config.TextTransparency or 0.05,
+        DescTextTransparency = Config.DescTextTransparency or 0.4,
         Opened = Config.Opened or false,
         UIElements = {},
         
@@ -68,28 +72,48 @@ function Element:New(Config)
         Section:SetIcon(Section.Icon)
     end
     
-    local TitleFrame = New("TextLabel", {
+    local TitleContainer = New("Frame", {
+        Size = UDim2.new(1,0,1,0),
         BackgroundTransparency = 1,
-        TextXAlignment = Section.TextXAlignment,
-        AutomaticSize = "Y",
-        TextSize = Section.TextSize,
-        TextTransparency = Section.TextTransparency,
-        ThemeTag = {
-            TextColor3 = "Text",
-        },
-        FontFace = Font.new(Creator.Font, Section.FontWeight),
-        --Parent = Config.Parent,
-        --Size = UDim2.new(1,0,0,0),
-        Text = Section.Title,
-        Size = UDim2.new(
-            1, 
-            0,
-            0,
-            0
-        ),
-        TextWrapped = true,
+    }, {
+        New("UIListLayout", {
+            FillDirection = "Vertical",
+            HorizontalAlignment = Section.TextXAlignment,
+            VerticalAlignment = "Center",
+        })
     })
-
+    
+    local TitleFrame, DescFrame
+    
+    function createTitle(Text, Type) 
+        return New("TextLabel", {
+            BackgroundTransparency = 1,
+            TextXAlignment = Section.TextXAlignment,
+            AutomaticSize = "Y",
+            TextSize = Type == "Title" and Section.TextSize or Section.DescTextSize,
+            TextTransparency = Type == "Title" and Section.TextTransparency or Section.DescTextTransparency,
+            ThemeTag = {
+                TextColor3 = "Text",
+            },
+            FontFace = Font.new(Creator.Font, Section.FontWeight),
+            --Parent = Config.Parent,
+            --Size = UDim2.new(1,0,0,0),
+            Text = Text,
+            Size = UDim2.new(
+                1, 
+                0,
+                0,
+                0
+            ),
+            TextWrapped = true,
+            Parent = TitleContainer,
+        })
+    end
+    
+    TitleFrame = createTitle(Section.Title, "Title")
+    if Section.Desc then
+        DescFrame = createTitle(Section.Desc, "Desc")
+    end
     
     local function UpdateTitleSize()
         local offset = 0
@@ -99,7 +123,7 @@ function Element:New(Config)
         if ChevronIconFrame.Visible then
             offset = offset - (Section.IconSize + 8)
         end
-        TitleFrame.Size = UDim2.new(1, offset, 0, 0)
+        TitleContainer.Size = UDim2.new(1, offset, 0, 0)
     end
     
     
@@ -109,11 +133,22 @@ function Element:New(Config)
         Parent = Config.Parent,
         ClipsDescendants = true,
         AutomaticSize = "Y",
-        ImageTransparency = Section.Box and .93 or 1,
         ThemeTag = {
-            ImageColor3 = "Text",
+            ImageTransparency = Section.Box and "SectionBoxBackgroundTransparency" or nil,
+            ImageColor3 = "SectionBoxBackground",
         },
+        ImageTransparency = not Section.Box and 1 or nil,
     }, {
+        Creator.NewRoundFrame(Config.Window.ElementConfig.UICorner, Config.Window.NewElements and "Glass-1" or "SquircleOutline", {
+            Size = UDim2.new(1,0,1,0),
+            --ImageTransparency = .75,
+            ThemeTag= {
+                ImageTransparency = "SectionBoxBorderTransparency",
+                ImageColor3 = "SectionBoxBorder",
+            },
+            Visible = Section.Box and Section.BoxBorder,
+            Name = "Outline",
+        }),
         New("TextButton", {
             Size = UDim2.new(1,0,0,Expandable and 0 or Section.HeaderSize),
             BackgroundTransparency = 1,
@@ -122,11 +157,11 @@ function Element:New(Config)
             Name = "Top",
         }, {
             Section.Box and New("UIPadding", {
-                PaddingLeft = UDim.new(0,Config.Window.ElementConfig.UIPadding),
-                PaddingRight = UDim.new(0,Config.Window.ElementConfig.UIPadding),
+                PaddingLeft = UDim.new(0,Config.Window.ElementConfig.UIPadding + (Config.Window.NewElements and 4 or 0)),
+                PaddingRight = UDim.new(0,Config.Window.ElementConfig.UIPadding + (Config.Window.NewElements and 4 or 0)),
             }) or nil,
             Icon,
-            TitleFrame,
+            TitleContainer,
             New("UIListLayout", {
                 Padding = UDim.new(0,8),
                 FillDirection = "Horizontal",
@@ -160,6 +195,7 @@ function Element:New(Config)
     --     Section.UIElements.Main.Size = UDim2.new(1,0,0,Section.UIElements.Main.TextBounds.Y)
     -- end)
     
+    Section.ElementFrame = Main
     
     
     local ElementsModule = Config.ElementsModule
@@ -176,7 +212,16 @@ function Element:New(Config)
     UpdateTitleSize()
     
     function Section:SetTitle(Title)
+        Section.Title = Title
         TitleFrame.Text = Title
+    end
+    
+    function Section:SetDesc(Desc)
+        Section.Desc = Desc
+        if not DescFrame then
+            DescFrame = createTitle(Desc, "Desc")
+        end
+        DescFrame.Text = Title
     end
     
     function Section:Destroy()
@@ -198,19 +243,19 @@ function Element:New(Config)
         if Section.Expandable then
             Section.Opened = true
             Tween(Main, 0.33, {
-                Size = UDim2.new(1,0,0, Section.HeaderSize + (Main.Content.AbsoluteSize.Y/Config.UIScale))
+                Size = UDim2.new(Main.Size.X.Scale,Main.Size.X.Offset,0, Section.HeaderSize + (Main.Content.AbsoluteSize.Y/Config.UIScale))
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
             
-            Tween(ChevronIconFrame.ImageLabel, 0.1, {Rotation = 180}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            Tween(ChevronIconFrame.ImageLabel, 0.2, {Rotation = 180}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
     end
     function Section:Close()
         if Section.Expandable then
             Section.Opened = false
             Tween(Main, 0.26, {
-                Size = UDim2.new(1,0,0, Section.HeaderSize)
+                Size = UDim2.new(Main.Size.X.Scale,Main.Size.X.Offset,0, Section.HeaderSize)
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-            Tween(ChevronIconFrame.ImageLabel, 0.1, {Rotation = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            Tween(ChevronIconFrame.ImageLabel, 0.2, {Rotation = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
     end
     
@@ -221,6 +266,12 @@ function Element:New(Config)
             else
                 Section:Open()
             end
+        end
+    end)
+    
+    Creator.AddSignal(Main.Content.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
+        if Section.Opened then
+            Section:Open()
         end
     end)
     
@@ -235,7 +286,7 @@ function Element:New(Config)
                 
             --     Parent = Main.Top,
             -- })
-            Main.Size = UDim2.new(1,0,0,Section.HeaderSize)
+            Main.Size = UDim2.new(Main.Size.X.Scale,Main.Size.X.Offset,0,Section.HeaderSize)
             Main.AutomaticSize = "None"
             Main.Top.Size = UDim2.new(1,0,0,Section.HeaderSize)
             Main.Top.AutomaticSize = "None"

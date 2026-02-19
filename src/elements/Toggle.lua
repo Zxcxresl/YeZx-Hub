@@ -13,6 +13,7 @@ function Element:New(Config)
         Title = Config.Title or "Toggle",
         Desc = Config.Desc or nil,
         Locked = Config.Locked or false,
+        LockedTitle = Config.LockedTitle,
         Value = Config.Value,
         Icon = Config.Icon or nil,
         IconSize = Config.IconSize or 23, -- from 26 to 0
@@ -29,11 +30,12 @@ function Element:New(Config)
         -- ThumbnailSize = Config.ThumbnailSize,
         Window = Config.Window,
         Parent = Config.Parent,
-        TextOffset = 44,
+        TextOffset = (24+24+4),
         Hover = false,
         Tab = Config.Tab,
         Index = Config.Index,
         ElementTable = Toggle,
+        ParentConfig = Config,
     })
     
     local CanCallback = true
@@ -47,7 +49,7 @@ function Element:New(Config)
     function Toggle:Lock()
         Toggle.Locked = true
         CanCallback = false
-        return Toggle.ToggleFrame:Lock()
+        return Toggle.ToggleFrame:Lock(Toggle.LockedTitle)
     end
     function Toggle:Unlock()
         Toggle.Locked = false
@@ -63,7 +65,7 @@ function Element:New(Config)
     
     local ToggleFrame, ToggleFunc
     if Toggle.Type == "Toggle" then
-        ToggleFrame, ToggleFunc = CreateToggle(Toggled, Toggle.Icon, Toggle.IconSize, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config.Window.NewElements)
+        ToggleFrame, ToggleFunc = CreateToggle(Toggled, Toggle.Icon, Toggle.IconSize, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config.Window.NewElements, Config)
     elseif Toggle.Type == "Checkbox" then
         ToggleFrame, ToggleFunc = CreateCheckbox(Toggled, Toggle.Icon, Toggle.IconSize, Toggle.ToggleFrame.UIElements.Main, Toggle.Callback, Config)
     else
@@ -72,20 +74,35 @@ function Element:New(Config)
 
     ToggleFrame.AnchorPoint = Vector2.new(1,Config.Window.NewElements and 0 or 0.5)
     ToggleFrame.Position = UDim2.new(1,0,Config.Window.NewElements and 0 or 0.5,0)
-        
-    function Toggle:Set(v, isCallback)
+    
+    function Toggle:Set(v, isCallback, isAnim)
         if CanCallback then
-            ToggleFunc:Set(v, isCallback)
+            ToggleFunc:Set(v, isCallback, isAnim or false)
             Toggled = v
             Toggle.Value = v
         end
     end
 
-    Toggle:Set(Toggled, false)
+    Toggle:Set(Toggled, false, Config.Window.NewElements)
 
-    Creator.AddSignal(Toggle.ToggleFrame.UIElements.Main.MouseButton1Click, function()
-        Toggle:Set(not Toggled)
-    end)
+
+    if Config.Window.NewElements and ToggleFunc.Animate then
+        Creator.AddSignal(Toggle.ToggleFrame.UIElements.Main.InputBegan, function(input)
+            if not Config.Window.IsToggleDragging and input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                ToggleFunc:Animate(input, Toggle)
+            end
+        end)
+    
+        -- Creator.AddSignal(Toggle.ToggleFrame.UIElements.Main.InputEnded, function(input)
+        --     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        --         ToggleFunc:Animate(input, true, Toggle)
+        --     end
+        -- end)
+    else
+        Creator.AddSignal(Toggle.ToggleFrame.UIElements.Main.MouseButton1Click, function()
+            Toggle:Set(not Toggle.Value, nil, Config.Window.NewElements)
+        end)
+    end
     
     return Toggle.__type, Toggle
 end

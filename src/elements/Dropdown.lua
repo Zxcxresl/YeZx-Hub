@@ -30,6 +30,7 @@ function Element:New(Config)
         Title = Config.Title or "Dropdown",
         Desc = Config.Desc or nil,
         Locked = Config.Locked or false,
+        LockedTitle = Config.LockedTitle,
         Values = Config.Values or {},
         MenuWidth = Config.MenuWidth,
         Value = Config.Value,
@@ -49,6 +50,9 @@ function Element:New(Config)
     if Dropdown.Multi and not Dropdown.Value then
         Dropdown.Value = {}
     end
+    if Dropdown.Values and typeof(Dropdown.Value) == "number"  then
+        Dropdown.Value = Dropdown.Values[Dropdown.Value]
+    end
     
     local CanCallback = true
     
@@ -62,6 +66,7 @@ function Element:New(Config)
         Index = Config.Index,
         Window = Config.Window,
         ElementTable = Dropdown,
+        ParentConfig = Config,
     })
     
     
@@ -116,7 +121,7 @@ function Element:New(Config)
     function Dropdown:Lock()
         Dropdown.Locked = true
         CanCallback = false
-        return Dropdown.DropdownFrame:Lock()
+        return Dropdown.DropdownFrame:Lock(Dropdown.LockedTitle)
     end
     function Dropdown:Unlock()
         Dropdown.Locked = false
