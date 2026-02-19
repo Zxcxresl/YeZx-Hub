@@ -121,12 +121,13 @@ function ConfigManager:Init(WindowTable)
     return ConfigManager
 end
 
-function ConfigManager:CreateConfig(configFilename)
+function ConfigManager:CreateConfig(configFilename, autoload)
     local ConfigModule = {
         Path = ConfigManager.Path .. configFilename .. ".json",
         Elements = {},
         CustomData = {},
-        Version = 1.1
+        AutoLoad = autoload or false,
+        Version = 1.2,
     }
     
     if not configFilename then
@@ -136,7 +137,7 @@ function ConfigManager:CreateConfig(configFilename)
     function ConfigModule:SetAsCurrent()
         Window:SetCurrentConfig(ConfigModule)
     end
-
+    
     function ConfigModule:Register(Name, Element)
         ConfigModule.Elements[Name] = Element
     end
@@ -149,6 +150,10 @@ function ConfigManager:CreateConfig(configFilename)
         return ConfigModule.CustomData[key]
     end
     
+    function ConfigModule:SetAutoLoad(Value)
+        ConfigModule.AutoLoad = Value
+    end
+    
     function ConfigModule:Save()
         if Window.PendingFlags then
             for flag, element in next, Window.PendingFlags do
@@ -159,6 +164,7 @@ function ConfigManager:CreateConfig(configFilename)
         local saveData = {
             __version = ConfigModule.Version,
             __elements = {},
+            __autoload = ConfigModule.AutoLoad,
             __custom = ConfigModule.CustomData
         }
         
@@ -250,13 +256,54 @@ function ConfigManager:CreateConfig(configFilename)
     function ConfigModule:GetData()
         return {
             elements = ConfigModule.Elements,
-            custom = ConfigModule.CustomData
+            custom = ConfigModule.CustomData,
+            autoload = ConfigModule.AutoLoad
         }
     end
+    
+    
+    if isfile(ConfigModule.Path) then
+        local success, configData = pcall(function()
+            return HttpService:JSONDecode(readfile(ConfigModule.Path))
+        end)
+        
+        if success and configData and configData.__autoload then
+            ConfigModule.AutoLoad = true
+            
+            task.spawn(function()
+                task.wait(0.5)
+                local success, result = pcall(function()
+                    return ConfigModule:Load()
+                end)
+                if success then
+                    if Window.Debug then print("[ WindUI.ConfigManager ] AutoLoaded config: " .. configFilename) end
+                else
+                    warn("[ WindUI.ConfigManager ] Failed to AutoLoad config: " .. configFilename .. " - " .. tostring(result))
+                end
+            end)
+        end
+    end
+    
     
     ConfigModule:SetAsCurrent()
     ConfigManager.Configs[configFilename] = ConfigModule
     return ConfigModule
+end
+
+function ConfigManager:Config(configFilename, autoload)
+    return ConfigManager:CreateConfig(configFilename, autoload)
+end
+
+function ConfigManager:GetAutoLoadConfigs()
+    local autoloadConfigs = {}
+    
+    for configName, configModule in pairs(ConfigManager.Configs) do
+        if configModule.AutoLoad then
+            table.insert(autoloadConfigs, configName)
+        end
+    end
+    
+    return autoloadConfigs
 end
 
 function ConfigManager:DeleteConfig(configName)
