@@ -207,9 +207,15 @@ return function(Config)
     
     local Title = CreateText(Element.Title, "Title")
     local Desc = CreateText(Element.Desc, "Desc")
+    if not Element.Title or Element.Title == "" then
+        Desc.Visible = false
+    end
     if not Element.Desc or Element.Desc == "" then
         Desc.Visible = false
     end
+    
+    Element.UIElements.Title = Title
+    Element.UIElements.Desc = Desc
     
     Element.UIElements.Container = New("Frame", {
         Size = UDim2.new(1,0,1,0),
@@ -611,10 +617,11 @@ return function(Config)
     end
     
     
-    function Element:Lock()
+    function Element:Lock(newtitle)
         CanHover = false
         Locked.Active = true
         Locked.Visible = true
+        LockedTitle.Text = newtitle
     end
     
     function Element:Unlock()
@@ -684,7 +691,13 @@ return function(Config)
 
     function Element.UpdateShape(Tab)
         if Config.Window.NewElements then
-            local newShape = getElementPosition(Tab.Elements, Element.Index)
+            local newShape
+            if Config.ParentConfig.ParentType == "Group" then
+                newShape = "Squircle"
+            else
+                newShape = getElementPosition(Tab.Elements, Element.Index)
+            end
+            
             if newShape and Main then
                 MainTable:SetType(newShape)
                 LockedTable:SetType(newShape)

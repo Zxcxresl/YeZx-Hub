@@ -83,9 +83,9 @@ function OpenButton.New(Window)
         ZIndex = 99,
         BackgroundColor3 = Color3.new(0,0,0),
     }, {
-        -- New("UIScale", {
-        --     Scale = 1.05,
-        -- }),
+        New("UIScale", {
+            Scale = 1,
+        }),
 	    New("UICorner", {
             CornerRadius = UDim.new(1,0)
         }),
