@@ -99,14 +99,14 @@ local Creator = {
     },
     ThemeFallbacks = require("../themes/Fallbacks"),
     Shapes = {
-        Square = "rbxassetid://82909646051652",
+        ["Square"] = "rbxassetid://82909646051652",
         ["Square-Outline"] = "rbxassetid://72946211851948",
         
-        Squircle = "rbxassetid://80999662900595",
-        SquircleOutline = "rbxassetid://117788349049947",
+        ["Squircle"] = "rbxassetid://80999662900595",
+        ["SquircleOutline"] = "rbxassetid://117788349049947",
         ["Squircle-Outline"] = "rbxassetid://117817408534198",
         
-        SquircleOutline2 = "rbxassetid://117817408534198",
+        ["SquircleOutline2"] = "rbxassetid://117817408534198",
         
         ["Shadow-sm"] = "rbxassetid://84825982946844",
         
@@ -114,6 +114,10 @@ local Creator = {
         ["Squircle-BL-BR"] = "rbxassetid://93853842912264",
         ["Squircle-TL-TR-Outline"] = "rbxassetid://136702870075563",
         ["Squircle-BL-BR-Outline"] = "rbxassetid://75035847706564",
+        
+        ["Glass-0.7"] = "rbxassetid://79047752995006",
+        ["Glass-1"] = "rbxassetid://97324581055162",
+        ["Glass-1.4"] = "rbxassetid://95071123641270",
     }
 }
 
@@ -195,7 +199,7 @@ end
 
 function Creator.SetTheme(Theme)
     Creator.Theme = Theme
-    Creator.UpdateTheme(nil, true)
+    Creator.UpdateTheme(nil, false)
 end
 
 function Creator.AddFontObject(Object)
@@ -424,7 +428,7 @@ function Creator.SetLanguage(lang)
 end
 
 function Creator.Icon(Icon, formatdefault)
-    return Icons.Icon(Icon, nil, formatdefault ~= false)
+    return Icons.Icon2(Icon, nil, formatdefault ~= false)
 end
 
 function Creator.AddIcons(packName, iconsData)
@@ -476,7 +480,7 @@ function Creator.NewRoundFrame(Radius, Type, Properties, Children, isButton, Ret
     end
     
     local function getSliceCenterForType(shapeType)
-        return shapeType ~= "Shadow-sm" and Rect.new(
+        return not table.find({"Shadow-sm", "Glass-0.7", "Glass-1", "Glass-1.4"}, shapeType) and Rect.new(
             512/2,
             512/2,
             512/2,
@@ -500,7 +504,7 @@ function Creator.NewRoundFrame(Radius, Type, Properties, Children, isButton, Ret
     end
 
     local function UpdateSliceScale(newRadius)
-        local sliceScale = Type ~= "Shadow-sm" and (newRadius / (512/2)) or (newRadius/512)
+        local sliceScale = not table.find({"Shadow-sm", "Glass-0.7", "Glass-1", "Glass-1.4"}, Type) and (newRadius / (512/2)) or (newRadius/512)
         Image.SliceScale = math.max(sliceScale, 0.0001)
     end
     
@@ -711,5 +715,70 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, Them
     return ImageFrame
 end
 
+
+
+function Creator.Color3ToHSB(color)
+	local r, g, b = color.R, color.G, color.B
+	local max = math.max(r, g, b)
+	local min = math.min(r, g, b)
+	local delta = max - min
+
+	local h = 0
+	if delta ~= 0 then
+		if max == r then
+			h = (g - b) / delta % 6
+		elseif max == g then
+			h = (b - r) / delta + 2
+		else
+			h = (r - g) / delta + 4
+		end
+		h = h * 60
+	else
+		h = 0
+	end
+
+	local s = (max == 0) and 0 or (delta / max)
+	local v = max
+
+	return {
+		h = math.floor(h + 0.5),
+		s = s,
+		b = v
+	}
+end
+
+function Creator.GetPerceivedBrightness(color)
+	local r = color.R
+	local g = color.G
+	local b = color.B
+	return 0.299 * r + 0.587 * g + 0.114 * b
+end
+
+function Creator.GetTextColorForHSB(color, contrast)
+    local hsb = Creator.Color3ToHSB(color)
+	local h, s, b = hsb.h, hsb.s, hsb.b
+	if Creator.GetPerceivedBrightness(color) > (contrast or 0.5) then
+		return Color3.fromHSV(h / 360, 0, 0.05)
+	else
+		return Color3.fromHSV(h / 360, 0, 0.98)
+	end
+end
+
+function Creator.GetAverageColor(gradient)
+    local r, g, b = 0, 0, 0
+    local keypoints = gradient.Color.Keypoints
+    for _, k in ipairs(keypoints) do
+        -- bruh
+        r = r + k.Value.R
+        g = g + k.Value.G
+        b = b + k.Value.B
+    end
+    local n = #keypoints
+    return Color3.new(r/n, g/n, b/n)
+end
+
+function Creator:GenerateUniqueID()
+    return HttpService:GenerateGUID(false)
+end
 
 return Creator
